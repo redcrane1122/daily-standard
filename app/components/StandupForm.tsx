@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { StandupEntry } from '../types/standup';
+import { useState } from "react";
+import { StandupEntry } from "../types/standup";
 
 interface StandupFormProps {
   onSubmit: (standup: Omit<StandupEntry, 'id' | 'createdAt' | 'updatedAt'>) => void;
@@ -9,19 +9,23 @@ interface StandupFormProps {
 
 export default function StandupForm({ onSubmit }: StandupFormProps) {
   const [formData, setFormData] = useState({
-    name: '',
-    yesterday: '',
-    today: '',
-    blockers: ''
+    name: "",
+    yesterday: "",
+    today: "",
+    blockers: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name.trim() || !formData.yesterday.trim() || !formData.today.trim()) {
-      alert('Please fill in all required fields');
+
+    if (
+      !formData.name.trim() ||
+      !formData.yesterday.trim() ||
+      !formData.today.trim()
+    ) {
+      alert("Please fill in all required fields");
       return;
     }
 
@@ -29,41 +33,48 @@ export default function StandupForm({ onSubmit }: StandupFormProps) {
 
     const newStandup = {
       name: formData.name.trim(),
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toISOString().split("T")[0],
       yesterday: formData.yesterday.trim(),
       today: formData.today.trim(),
       blockers: formData.blockers.trim() || null
     };
 
     onSubmit(newStandup);
-    
+
     // Reset form
     setFormData({
-      name: '',
-      yesterday: '',
-      today: '',
-      blockers: ''
+      name: "",
+      yesterday: "",
+      today: "",
+      blockers: "",
     });
-    
+
     setIsSubmitting(false);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-gray-900 mb-6">Submit Your Standup</h2>
-      
+      <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+        Submit Your Standup
+      </h2>
+
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name Field */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Your Name *
           </label>
           <input
@@ -80,7 +91,10 @@ export default function StandupForm({ onSubmit }: StandupFormProps) {
 
         {/* Yesterday's Work */}
         <div>
-          <label htmlFor="yesterday" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="yesterday"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             What did you accomplish yesterday? *
           </label>
           <textarea
@@ -97,7 +111,10 @@ export default function StandupForm({ onSubmit }: StandupFormProps) {
 
         {/* Today's Work */}
         <div>
-          <label htmlFor="today" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="today"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             What are you working on today? *
           </label>
           <textarea
@@ -114,7 +131,10 @@ export default function StandupForm({ onSubmit }: StandupFormProps) {
 
         {/* Blockers */}
         <div>
-          <label htmlFor="blockers" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="blockers"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Any blockers or impediments?
           </label>
           <textarea
@@ -134,7 +154,7 @@ export default function StandupForm({ onSubmit }: StandupFormProps) {
           disabled={isSubmitting}
           className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {isSubmitting ? 'Submitting...' : 'Submit Standup'}
+          {isSubmitting ? "Submitting..." : "Submit Standup"}
         </button>
       </form>
     </div>
