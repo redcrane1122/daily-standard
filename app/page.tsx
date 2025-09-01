@@ -7,25 +7,94 @@ import { StandupEntry } from './types/standup';
 
 export default function Home() {
   const [standups, setStandups] = useState<StandupEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Load standups from localStorage on component mount
-    const savedStandups = localStorage.getItem('daily-standups');
-    if (savedStandups) {
-      setStandups(JSON.parse(savedStandups));
-    }
+    fetchStandups();
   }, []);
 
-  const addStandup = (standup: StandupEntry) => {
-    const newStandups = [standup, ...standups];
-    setStandups(newStandups);
-    localStorage.setItem('daily-standups', JSON.stringify(newStandups));
+  const fetchStandups = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/standups');
+      if (!response.ok) {
+        throw new Error('Failed to fetch standups');
+      }
+      const data = await response.json();
+      setStandups(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const clearStandups = () => {
-    setStandups([]);
-    localStorage.removeItem('daily-standups');
+  const addStandup = async (standupData: Omit<StandupEntry, 'id' | 'createdAt' | 'updatedAt'>) => {
+    try {
+      const response = await fetch('/api/standups', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(standupData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create standup');
+      }
+
+      const newStandup = await response.json();
+      setStandups(prev => [newStandup, ...prev]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create standup');
+    }
   };
+
+  const clearStandups = async () => {
+    try {
+      const response = await fetch('/api/standups/clear', {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to clear standups');
+      }
+
+      setStandups([]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to clear standups');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading standups...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Error</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={fetchStandups}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">

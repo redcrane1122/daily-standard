@@ -1,9 +1,12 @@
 [build]
-  command = "npm run build"
+  command = "npx prisma generate && npm run build"
   publish = ".next"
 
 [build.environment]
   NODE_VERSION = "18"
+
+# For production, you'll need to set DATABASE_URL environment variable
+# in your Netlify dashboard under Site settings > Environment variables
 
 [[redirects]]
   from = "/*"
@@ -17,3 +20,4 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+

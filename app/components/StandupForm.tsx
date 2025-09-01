@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { StandupEntry } from '../types/standup';
 
 interface StandupFormProps {
-  onSubmit: (standup: StandupEntry) => void;
+  onSubmit: (standup: Omit<StandupEntry, 'id' | 'createdAt' | 'updatedAt'>) => void;
 }
 
 export default function StandupForm({ onSubmit }: StandupFormProps) {
@@ -27,14 +27,12 @@ export default function StandupForm({ onSubmit }: StandupFormProps) {
 
     setIsSubmitting(true);
 
-    const newStandup: StandupEntry = {
-      id: Date.now().toString(),
+    const newStandup = {
       name: formData.name.trim(),
       date: new Date().toISOString().split('T')[0],
       yesterday: formData.yesterday.trim(),
       today: formData.today.trim(),
-      blockers: formData.blockers.trim(),
-      timestamp: Date.now()
+      blockers: formData.blockers.trim() || null
     };
 
     onSubmit(newStandup);
@@ -142,3 +140,4 @@ export default function StandupForm({ onSubmit }: StandupFormProps) {
     </div>
   );
 }
+

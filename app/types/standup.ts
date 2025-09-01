@@ -4,6 +4,8 @@ export interface StandupEntry {
   date: string;
   yesterday: string;
   today: string;
-  blockers: string;
-  timestamp: number;
+  blockers: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
+

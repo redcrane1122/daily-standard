@@ -31,12 +31,27 @@ cd my-app
 npm install
 ```
 
-3. Run the development server:
+3. Set up the database:
+```bash
+# Generate Prisma client
+npm run db:generate
+
+# Run database migrations
+npm run db:migrate
+```
+
+4. Run the development server:
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Database Management
+
+- **View database**: `npm run db:studio` - Opens Prisma Studio in your browser
+- **Generate client**: `npm run db:generate` - Regenerates Prisma client after schema changes
+- **Run migrations**: `npm run db:migrate` - Applies database schema changes
 
 ## Usage
 
@@ -89,21 +104,42 @@ netlify deploy --prod --dir=.next
 
 ### Environment Variables
 
-No environment variables are required for this application as it runs entirely in the browser.
+Create a `.env` file in the root directory:
+
+```env
+# Database
+DATABASE_URL="file:./dev.db"
+```
+
+For production, use a proper database URL:
+```env
+# PostgreSQL example
+DATABASE_URL="postgresql://username:password@localhost:5432/standup_db"
+
+# Or SQLite for simple deployments
+DATABASE_URL="file:./prod.db"
+```
 
 ## Project Structure
 
 ```
 my-app/
 ├── app/
+│   ├── api/
+│   │   └── standups/            # API routes for standup operations
 │   ├── components/
 │   │   ├── StandupForm.tsx      # Form for submitting standups
 │   │   └── StandupList.tsx      # Display list of standups
+│   ├── lib/
+│   │   └── prisma.ts            # Prisma client configuration
 │   ├── types/
 │   │   └── standup.ts           # TypeScript interfaces
 │   ├── globals.css              # Global styles
 │   ├── layout.tsx               # Root layout
 │   └── page.tsx                 # Main page component
+├── prisma/
+│   ├── migrations/              # Database migrations
+│   └── schema.prisma            # Database schema
 ├── netlify.toml                 # Netlify configuration
 ├── package.json                 # Dependencies and scripts
 └── README.md                    # This file
@@ -115,7 +151,9 @@ my-app/
 - **React 19**: Latest React with hooks
 - **TypeScript**: Type-safe JavaScript
 - **Tailwind CSS**: Utility-first CSS framework
-- **Local Storage**: Browser-based data persistence
+- **Prisma**: Database ORM and query builder
+- **SQLite**: Lightweight database (development)
+- **PostgreSQL**: Production database option
 
 ## Customization
 

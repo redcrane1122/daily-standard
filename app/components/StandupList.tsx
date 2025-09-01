@@ -49,8 +49,8 @@ export default function StandupList({ standups }: StandupListProps) {
     }
   };
 
-  const formatTime = (timestamp: number) => {
-    return new Date(timestamp).toLocaleTimeString('en-US', { 
+  const formatTime = (date: Date) => {
+    return new Date(date).toLocaleTimeString('en-US', { 
       hour: '2-digit', 
       minute: '2-digit' 
     });
@@ -82,7 +82,7 @@ export default function StandupList({ standups }: StandupListProps) {
                     <div>
                       <h4 className="font-medium text-gray-900">{standup.name}</h4>
                       <p className="text-sm text-gray-500">
-                        Submitted at {formatTime(standup.timestamp)}
+                        Submitted at {formatTime(standup.createdAt)}
                       </p>
                     </div>
                   </div>
@@ -132,3 +132,4 @@ export default function StandupList({ standups }: StandupListProps) {
     </div>
   );
 }
+
